@@ -785,15 +785,11 @@ Canvas auxiliar de Pygbag
 
 /*
 ============================================================
-CORRECCIÓN FLECHA ARRIBA EN TABLET
+PRUEBA FLECHA ABAJO - TABLET
 ============================================================
 */
 
-const gameCanvas =
-    document.getElementById(
-        "canvas"
-    );
-
+const gameCanvas = document.getElementById("canvas");
 
 if (gameCanvas) {
 
@@ -801,71 +797,45 @@ if (gameCanvas) {
         "pointerdown",
         function (event) {
 
-            const rect =
-                gameCanvas.getBoundingClientRect();
-
-            const escalaX =
-                gameCanvas.width / rect.width;
-
-            const escalaY =
-                gameCanvas.height / rect.height;
-
-            const x =
-                (event.clientX - rect.left) * escalaX;
-
-            const y =
-                (event.clientY - rect.top) * escalaY;
-
+            /*
+            Punto donde has comprobado que está
+            el pulsador ABAJO.
+            */
+            const objetivoX = 337;
+            const objetivoY = 636;
 
             /*
-            Posición de ARRIBA en el juego:
-
-                centro_x = 110
-
-                centro_y = alto - 120
-                         = 480
-
-                separacion = 55
-
-                arriba = 425
+            Radio de detección.
+            Aumenta este número si quieres una zona
+            táctil más grande.
             */
-
-            const arribaX = 110;
-            const arribaY = 300;
-
+            const radio = 50;
 
             const distanciaX =
-                x - arribaX;
+                event.clientX - objetivoX;
 
             const distanciaY =
-                y - arribaY;
-
-
-            /*
-            Zona táctil ampliada SOLO para ARRIBA.
-            */
+                event.clientY - objetivoY;
 
             if (
-                Math.abs(distanciaX) <= 50 &&
-                Math.abs(distanciaY) <= 50
+                Math.abs(distanciaX) <= radio &&
+                Math.abs(distanciaY) <= radio
             ) {
 
                 event.preventDefault();
-
 
                 gameCanvas.dispatchEvent(
                     new KeyboardEvent(
                         "keydown",
                         {
-                            key: "ArrowUp",
-                            code: "ArrowUp",
-                            keyCode: 38,
-                            which: 38,
+                            key: "ArrowDown",
+                            code: "ArrowDown",
+                            keyCode: 40,
+                            which: 40,
                             bubbles: true
                         }
                     )
                 );
-
             }
 
         },
@@ -873,10 +843,7 @@ if (gameCanvas) {
             passive: false
         }
     );
-
 }
-
-
 /*
 ============================================================
 PYGBAG
