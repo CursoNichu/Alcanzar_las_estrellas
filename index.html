@@ -302,11 +302,6 @@ canvas.emscripten {
 
     position: relative;
 
-    /*
-    El juego internamente sigue siendo 800x600.
-    El navegador solamente adapta su tamaño visual.
-    */
-
     width: min(100vw, 133.3333vh);
 
     height: min(75vh, 75vw);
@@ -436,46 +431,6 @@ div.thick_border {
     border: 1px solid black;
 }
 
-
-/*
-============================================================
-INPUT TECLADO MÓVIL
-============================================================
-*/
-
-#mobile-text-input {
-
-    position: fixed;
-
-    left: 50%;
-
-    bottom: 20px;
-
-    transform: translateX(-50%);
-
-    width: 300px;
-
-    height: 50px;
-
-    opacity: 0.01;
-
-    z-index: 999999;
-
-    border: 0;
-
-    outline: 0;
-
-    background: transparent;
-
-    color: transparent;
-
-    font-size: 18px;
-
-    pointer-events: none;
-
-    touch-action: none;
-}
-
 </style>
 
 </head>
@@ -521,7 +476,8 @@ CONTENEDOR DEL JUEGO
         width="800"
         height="600"
         oncontextmenu="event.preventDefault()"
-        tabindex="1"
+        tabindex="-1"
+        inputmode="none"
     ></canvas>
 
 </div>
@@ -554,6 +510,7 @@ Canvas auxiliar de Pygbag
     id="crt"
     class="bottomright"
 >
+
 
     <div
         id="system"
@@ -683,23 +640,6 @@ Canvas auxiliar de Pygbag
 </div>
 
 
-<!--
-============================================================
-INPUT INVISIBLE PARA TECLADO
-============================================================
--->
-
-<input
-    id="mobile-text-input"
-    type="text"
-    autocomplete="off"
-    autocorrect="off"
-    autocapitalize="none"
-    spellcheck="false"
-    inputmode="text"
->
-
-
 <div id="pyconsole">
 
     <div
@@ -716,25 +656,9 @@ INPUT INVISIBLE PARA TECLADO
 
 /*
 ============================================================
-TECLADO MÓVIL
+CORRECCIÓN FLECHA ARRIBA EN TABLET
 ============================================================
-
-IMPORTANTE:
-
-NO hacemos focus al tocar el canvas.
-
-El teclado móvil solo debe aparecer cuando
-Pygame llame a:
-
-    pygame.key.start_text_input()
-
 */
-
-const mobileInput =
-    document.getElementById(
-        "mobile-text-input"
-    );
-
 
 const gameCanvas =
     document.getElementById(
@@ -742,30 +666,82 @@ const gameCanvas =
     );
 
 
-if (
-    mobileInput &&
-    gameCanvas
-) {
+if (gameCanvas) {
 
-    /*
-    No hacemos:
+    gameCanvas.addEventListener(
+        "pointerdown",
+        function (event) {
 
-        mobileInput.focus()
+            const rect =
+                gameCanvas.getBoundingClientRect();
 
-    al tocar la pantalla.
+            const escalaX =
+                gameCanvas.width / rect.width;
 
-    Así los botones móviles no provocan
-    la aparición del teclado.
-    */
+            const escalaY =
+                gameCanvas.height / rect.height;
 
-    mobileInput.addEventListener(
-        "blur",
-        function () {
+            const x =
+                (event.clientX - rect.left) * escalaX;
+
+            const y =
+                (event.clientY - rect.top) * escalaY;
+
 
             /*
-            No forzamos el teclado otra vez.
+            Posición de ARRIBA en el juego:
+
+                centro_x = 110
+
+                centro_y = alto - 120
+                         = 480
+
+                separacion = 55
+
+                arriba = 425
             */
 
+            const arribaX = 110;
+            const arribaY = 425;
+
+
+            const distanciaX =
+                x - arribaX;
+
+            const distanciaY =
+                y - arribaY;
+
+
+            /*
+            Zona táctil ampliada SOLO para ARRIBA.
+            */
+
+            if (
+                Math.abs(distanciaX) <= 50 &&
+                Math.abs(distanciaY) <= 50
+            ) {
+
+                event.preventDefault();
+
+
+                gameCanvas.dispatchEvent(
+                    new KeyboardEvent(
+                        "keydown",
+                        {
+                            key: "ArrowUp",
+                            code: "ArrowUp",
+                            keyCode: 38,
+                            which: 38,
+                            bubbles: true
+                        }
+                    )
+                );
+
+            }
+
+        },
+        {
+            passive: false
         }
     );
 
