@@ -315,13 +315,25 @@ canvas.emscripten {
     z-index: 5;
 }
 
-/* En horizontal aprovechamos un poco más la pantalla */
+
+/*
+============================================================
+EN HORIZONTAL APROVECHAMOS UN POCO MÁS LA PANTALLA
+============================================================
+*/
+
 @media screen and (orientation: landscape) {
+
     canvas.emscripten {
+
         width: min(110vw, 146.6666vh);
+
         height: min(82.5vh, 82.5vw);
+
     }
+
 }
+
 
 /*
 ============================================================
@@ -487,133 +499,318 @@ CONTENEDOR DEL JUEGO
         inputmode="none"
     ></canvas>
 
+
+    <!--
+    ========================================================
+    DIAGNÓSTICO TEMPORAL DE TOQUES
+    ========================================================
+    -->
+
     <div id="touch-debug"></div>
 
     <style>
+
         #touch-debug {
+
             position: fixed;
-            min-width: 220px;
-            padding: 8px 10px;
+
+            left: 10px;
+            top: 10px;
+
+            min-width: 300px;
+
+            padding: 10px;
+
             border: 3px solid red;
+
             border-radius: 8px;
-            background: rgba(0, 0, 0, 0.85);
+
+            background: rgba(0, 0, 0, 0.9);
+
             pointer-events: none;
+
             display: none;
+
             z-index: 9999;
+
             font-family: Arial, sans-serif;
+
             font-size: 14px;
+
             color: white;
-            line-height: 1.4;
+
+            line-height: 1.5;
         }
 
+
         #touch-debug-punto {
+
             position: fixed;
+
             width: 24px;
             height: 24px;
+
             border: 3px solid red;
+
             border-radius: 50%;
+
             background: rgba(255, 0, 0, 0.35);
+
             pointer-events: none;
+
             display: none;
+
             z-index: 9998;
+
             transform: translate(-50%, -50%);
         }
+
     </style>
+
 
     <div id="touch-debug-punto"></div>
 
+
     <script>
+
     (function () {
 
-        const canvas = document.getElementById("canvas");
-        const informacion = document.getElementById("touch-debug");
-        const punto = document.getElementById("touch-debug-punto");
+        const canvas =
+            document.getElementById("canvas");
 
-        if (!canvas || !informacion || !punto) {
+        const informacion =
+            document.getElementById("touch-debug");
+
+        const punto =
+            document.getElementById("touch-debug-punto");
+
+
+        if (
+            !canvas ||
+            !informacion ||
+            !punto
+        ) {
+
             return;
+
         }
 
+
         canvas.addEventListener(
+
             "pointerdown",
+
             function (event) {
 
-                const rect = canvas.getBoundingClientRect();
+                /*
+                ====================================================
+                RECTÁNGULO REAL DEL CANVAS EN LA PANTALLA
+                ====================================================
+                */
+
+                const rect =
+                    canvas.getBoundingClientRect();
+
 
                 /*
-                * Posición física del toque dentro del canvas
+                ====================================================
+                POSICIÓN DEL TOQUE EN LA PANTALLA
+                ====================================================
                 */
-                const canvasX = event.clientX - rect.left;
-                const canvasY = event.clientY - rect.top;
+
+                const pantallaX =
+                    event.clientX;
+
+                const pantallaY =
+                    event.clientY;
+
 
                 /*
-                * Conversión a las coordenadas internas
-                * del juego: 800 x 600
+                ====================================================
+                POSICIÓN Y TAMAÑO REAL DEL CANVAS
+                ====================================================
                 */
+
+                const canvasIzquierda =
+                    rect.left;
+
+                const canvasArriba =
+                    rect.top;
+
+                const canvasAncho =
+                    rect.width;
+
+                const canvasAlto =
+                    rect.height;
+
+
+                /*
+                ====================================================
+                POSICIÓN DEL TOQUE DENTRO DEL CANVAS
+                ====================================================
+                */
+
+                const dentroCanvasX =
+                    pantallaX -
+                    canvasIzquierda;
+
+                const dentroCanvasY =
+                    pantallaY -
+                    canvasArriba;
+
+
+                /*
+                ====================================================
+                CONVERSIÓN A 800 x 600
+                ====================================================
+                */
+
                 const juegoX =
-                    canvasX * (800 / rect.width);
+                    dentroCanvasX *
+                    (800 / canvasAncho);
 
                 const juegoY =
-                    canvasY * (600 / rect.height);
+                    dentroCanvasY *
+                    (600 / canvasAlto);
+
 
                 /*
-                * Mostramos el punto exactamente donde
-                * se ha tocado la pantalla.
+                ====================================================
+                MOSTRAR PUNTO ROJO
+                ====================================================
                 */
-                punto.style.left = event.clientX + "px";
-                punto.style.top = event.clientY + "px";
-                punto.style.display = "block";
+
+                punto.style.left =
+                    pantallaX + "px";
+
+                punto.style.top =
+                    pantallaY + "px";
+
+                punto.style.display =
+                    "block";
+
 
                 /*
-                * Mostramos la información.
+                ====================================================
+                MOSTRAR INFORMACIÓN
+                ====================================================
                 */
+
                 informacion.innerHTML =
-                    "PANTALLA: X " +
-                    Math.round(event.clientX) +
+
+                    "<b>TOQUE</b><br>" +
+
+                    "Pantalla: X " +
+                    Math.round(pantallaX) +
                     " / Y " +
-                    Math.round(event.clientY) +
+                    Math.round(pantallaY) +
+
+                    "<br><br>" +
+
+                    "<b>CANVAS EN PANTALLA</b><br>" +
+
+                    "Izquierda: " +
+                    Math.round(canvasIzquierda) +
+
                     "<br>" +
-                    "CANVAS: X " +
-                    Math.round(canvasX) +
+
+                    "Arriba: " +
+                    Math.round(canvasArriba) +
+
+                    "<br>" +
+
+                    "Ancho: " +
+                    Math.round(canvasAncho) +
+
+                    "<br>" +
+
+                    "Alto: " +
+                    Math.round(canvasAlto) +
+
+                    "<br><br>" +
+
+                    "<b>DENTRO DEL CANVAS</b><br>" +
+
+                    "X " +
+                    Math.round(dentroCanvasX) +
                     " / Y " +
-                    Math.round(canvasY) +
-                    "<br>" +
-                    "JUEGO: X " +
+                    Math.round(dentroCanvasY) +
+
+                    "<br><br>" +
+
+                    "<b>COORDENADAS DEL JUEGO</b><br>" +
+
+                    "X " +
                     Math.round(juegoX) +
                     " / Y " +
                     Math.round(juegoY);
 
-                informacion.style.left = "10px";
-                informacion.style.top = "10px";
 
-                informacion.style.display = "block";
+                informacion.style.display =
+                    "block";
+
+
+                /*
+                ====================================================
+                CONSOLA
+                ====================================================
+                */
 
                 console.log(
-                    "TOQUE",
-                    "pantalla:",
-                    event.clientX,
-                    event.clientY,
-                    "canvas:",
-                    canvasX,
-                    canvasY,
-                    "juego:",
+                    "TOQUE:",
+                    pantallaX,
+                    pantallaY
+                );
+
+
+                console.log(
+                    "CANVAS:",
+                    "left =",
+                    canvasIzquierda,
+
+                    "top =",
+                    canvasArriba,
+
+                    "width =",
+                    canvasAncho,
+
+                    "height =",
+                    canvasAlto
+                );
+
+
+                console.log(
+                    "DENTRO CANVAS:",
+                    dentroCanvasX,
+                    dentroCanvasY
+                );
+
+
+                console.log(
+                    "JUEGO:",
                     juegoX,
                     juegoY
                 );
 
             },
+
             {
                 passive: true
             }
+
         );
 
     })();
+
     </script>
 
 </div>
 
 
 <!--
-Canvas auxiliar de Pygbag
+============================================================
+CANVAS AUXILIAR DE PYGBAG
+============================================================
 -->
 
 <canvas
@@ -783,67 +980,6 @@ Canvas auxiliar de Pygbag
 <script type="application/javascript">
 
 
-/*
-============================================================
-PRUEBA FLECHA ABAJO - TABLET
-============================================================
-*/
-
-const gameCanvas = document.getElementById("canvas");
-
-if (gameCanvas) {
-
-    gameCanvas.addEventListener(
-        "pointerdown",
-        function (event) {
-
-            /*
-            Punto donde has comprobado que está
-            el pulsador ABAJO.
-            */
-            const objetivoX = 337;
-            const objetivoY = 636;
-
-            /*
-            Radio de detección.
-            Aumenta este número si quieres una zona
-            táctil más grande.
-            */
-            const radio = 50;
-
-            const distanciaX =
-                event.clientX - objetivoX;
-
-            const distanciaY =
-                event.clientY - objetivoY;
-
-            if (
-                Math.abs(distanciaX) <= radio &&
-                Math.abs(distanciaY) <= radio
-            ) {
-
-                event.preventDefault();
-
-                gameCanvas.dispatchEvent(
-                    new KeyboardEvent(
-                        "keydown",
-                        {
-                            key: "ArrowDown",
-                            code: "ArrowDown",
-                            keyCode: 40,
-                            which: 40,
-                            bubbles: true
-                        }
-                    )
-                );
-            }
-
-        },
-        {
-            passive: false
-        }
-    );
-}
 /*
 ============================================================
 PYGBAG
