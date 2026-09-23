@@ -315,6 +315,13 @@ canvas.emscripten {
     z-index: 5;
 }
 
+/* En horizontal aprovechamos un poco más la pantalla */
+@media screen and (orientation: landscape) {
+    canvas.emscripten {
+        width: min(110vw, 146.6666vh);
+        height: min(82.5vh, 82.5vw);
+    }
+}
 
 /*
 ============================================================
