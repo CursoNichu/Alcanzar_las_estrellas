@@ -263,14 +263,21 @@ CONTENEDOR DEL JUEGO
 */
 
 #game-container {
+
     position: fixed;
+
     inset: 0;
+
     width: 100%;
     height: 100%;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     overflow: hidden;
+
     margin: 0;
     padding: 0;
 }
@@ -283,15 +290,25 @@ CANVAS DEL JUEGO
 */
 
 canvas.emscripten {
+
     border: 0;
+
     background-color: transparent;
+
     padding: 0;
     margin: 0;
 
     display: block;
+
     position: relative;
 
+    /*
+    El juego internamente sigue siendo 800x600.
+    El navegador solamente adapta su tamaño visual.
+    */
+
     width: min(100vw, 133.3333vh);
+
     height: min(75vh, 75vw);
 
     aspect-ratio: 4 / 3;
@@ -299,6 +316,7 @@ canvas.emscripten {
     flex: 0 0 auto;
 
     touch-action: none;
+
     z-index: 5;
 }
 
@@ -453,9 +471,9 @@ INPUT TECLADO MÓVIL
 
     font-size: 18px;
 
-    pointer-events: auto;
+    pointer-events: none;
 
-    touch-action: auto;
+    touch-action: none;
 }
 
 </style>
@@ -497,11 +515,6 @@ CONTENEDOR DEL JUEGO
 
 <div id="game-container">
 
-
-    <!--
-    CANVAS PRINCIPAL
-    -->
-
     <canvas
         class="emscripten"
         id="canvas"
@@ -510,7 +523,6 @@ CONTENEDOR DEL JUEGO
         oncontextmenu="event.preventDefault()"
         tabindex="1"
     ></canvas>
-
 
 </div>
 
@@ -542,7 +554,6 @@ Canvas auxiliar de Pygbag
     id="crt"
     class="bottomright"
 >
-
 
     <div
         id="system"
@@ -707,6 +718,16 @@ INPUT INVISIBLE PARA TECLADO
 ============================================================
 TECLADO MÓVIL
 ============================================================
+
+IMPORTANTE:
+
+NO hacemos focus al tocar el canvas.
+
+El teclado móvil solo debe aparecer cuando
+Pygame llame a:
+
+    pygame.key.start_text_input()
+
 */
 
 const mobileInput =
@@ -726,38 +747,24 @@ if (
     gameCanvas
 ) {
 
-    gameCanvas.addEventListener(
-        "touchstart",
-        function () {
+    /*
+    No hacemos:
 
-            mobileInput.focus({
-                preventScroll: true
-            });
+        mobileInput.focus()
 
-        },
-        {
-            passive: true
-        }
-    );
+    al tocar la pantalla.
 
-
-    gameCanvas.addEventListener(
-        "click",
-        function () {
-
-            mobileInput.focus({
-                preventScroll: true
-            });
-
-        }
-    );
-
+    Así los botones móviles no provocan
+    la aparición del teclado.
+    */
 
     mobileInput.addEventListener(
         "blur",
         function () {
 
-            gameCanvas.focus();
+            /*
+            No forzamos el teclado otra vez.
+            */
 
         }
     );
