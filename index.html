@@ -486,6 +486,58 @@ CONTENEDOR DEL JUEGO
         tabindex="-1"
         inputmode="none"
     ></canvas>
+    <div id="touch-debug"></div>
+
+    <style>
+        #touch-debug {
+            position: fixed;
+            width: 24px;
+            height: 24px;
+            border: 3px solid red;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, 0.35);
+            pointer-events: none;
+            display: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: red;
+        }
+    </style>
+
+    <script>
+    (function () {
+
+        const canvas = document.getElementById("canvas");
+        const indicador = document.getElementById("touch-debug");
+
+        if (!canvas || !indicador) {
+            return;
+        }
+
+        canvas.addEventListener(
+            "pointerdown",
+            function (event) {
+
+                indicador.style.left = event.clientX + "px";
+                indicador.style.top = event.clientY + "px";
+                indicador.style.display = "block";
+
+                console.log(
+                    "TOQUE:",
+                    "X pantalla =", event.clientX,
+                    "Y pantalla =", event.clientY
+                );
+
+            },
+            {
+                passive: true
+            }
+        );
+
+    })();
+    </script>
 
 </div>
 
