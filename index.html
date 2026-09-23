@@ -1,4 +1,16 @@
-<html lang="en-us"><script src="https://pygame-web.github.io/cdn/0.9.3/pythons.js" type=module id="site" data-python="python3.12" data-LINES=42 data-COLUMNS=132 data-os="vtx,snd,gui" async defer>#<!--
+<html lang="en-us">
+
+<script
+    src="https://pygame-web.github.io/cdn/0.9.3/pythons.js"
+    type="module"
+    id="site"
+    data-python="python3.12"
+    data-LINES="42"
+    data-COLUMNS="132"
+    data-os="vtx,snd,gui"
+    async
+    defer
+>#<!--
 
 print("""
 Loading alcanzar from alcanzar.apk
@@ -11,7 +23,6 @@ Loading alcanzar from alcanzar.apk
     Folder  : alcanzar
     Authors : pgw
     SPDX-License-Identifier: cookiecutter.spdx
-
 """)
 
 import sys
@@ -20,13 +31,14 @@ import platform
 import json
 from pathlib import Path
 
-# do not rename
+
 async def custom_site():
+
     import embed
 
     platform.document.body.style.background = "#7f7f7f"
 
-    platform.window.transfer.hidden = true
+    platform.window.transfer.hidden = True
     platform.window.canvas.style.visibility = "visible"
 
     bundle = "alcanzar"
@@ -34,12 +46,14 @@ async def custom_site():
     appdir = Path(f"/data/data/{bundle}")
     appdir.mkdir()
 
-    # unpack filesystem from compressed archive into work dir
     if platform.window.location.host.find('.itch.zone') > 0:
 
         import zipfile
 
-        async with platform.fopen("alcanzar.apk", "rb") as archive:
+        async with platform.fopen(
+            "alcanzar.apk",
+            "rb"
+        ) as archive:
 
             with zipfile.ZipFile(archive) as zip_ref:
                 zip_ref.extractall(appdir.as_posix())
@@ -48,7 +62,10 @@ async def custom_site():
 
         import tarfile
 
-        async with platform.fopen("alcanzar.tar.gz", "rb") as archive:
+        async with platform.fopen(
+            "alcanzar.tar.gz",
+            "rb"
+        ) as archive:
 
             tar = tarfile.open(
                 fileobj=archive,
@@ -57,25 +74,22 @@ async def custom_site():
 
             tar.extractall(
                 path=appdir.as_posix(),
-                filter='tar'
+                filter="tar"
             )
 
             tar.close()
 
-    # preloader will change to work dir and prepend it to sys.path
     platform.run_main(
         PyConfig,
         loaderhome=appdir / "assets",
         loadermain=None
     )
 
-    # wait preloading complete
     while embed.counter() < 0:
         await asyncio.sleep(.1)
 
     main = appdir / "assets" / "main.py"
 
-    # test/wait user media interaction
     if not platform.window.MM.UME:
 
         __import__(__name__).__file__ = main
@@ -93,13 +107,11 @@ async def custom_site():
         while not platform.window.MM.UME:
             await asyncio.sleep(.1)
 
-    # start async top level machinery
     await TopLevel_async_handler.start_toplevel(
         platform.shell,
         console=window.python.config.debug
     )
 
-    # now that apk is mounted we have access to font cache
     __import__(__name__).__file__ = main
 
     def ui_callback(pkg):
@@ -123,64 +135,44 @@ async def custom_site():
 
 asyncio.run(custom_site())
 
-
-
-
-
-
-
-
-
 # BEGIN BLOCK
-#
-# now this is the html part you can (and should) customize
-# It is not mandatory : pygame-script when it reads the first line (also called
-# shebang ) of above code create absolute minimal widget set
-# required for running with default rules
-#
-# do not alter that comment block it is separating python code from html code
-# =============================================================================
-# --></script><head><!--
+# --></script>
 
-    {%- if cookiecutter.comment != "" -%}
-{{cookiecutter.comment}}
-    {% endif %}
+<head>
 
---><script type="application/javascript">
-// END BLOCK
-
+<script type="application/javascript">
 
 config = {
 
-    xtermjs : "1",
+    xtermjs: "1",
 
-    _sdl2 : "canvas",
+    _sdl2: "canvas",
 
-    user_canvas : 0,
+    user_canvas: 0,
 
-    user_canvas_managed : 0,
+    user_canvas_managed: 0,
 
-    gui_divider : 2,
+    gui_divider: 2,
 
-    ume_block : 1,
+    ume_block: 1,
 
-    can_close : 0,
+    can_close: 0,
 
-    archive : "alcanzar",
+    archive: "alcanzar",
 
-    gui_debug : 2,
+    gui_debug: 2,
 
-    cdn : "https://pygame-web.github.io/cdn/0.9.3/",
+    cdn: "https://pygame-web.github.io/cdn/0.9.3/",
 
-    autorun : 0,
+    autorun: 0,
 
-    PYBUILD : "3.12",
+    PYBUILD: "3.12",
 
-    fb_ar : 1.77,
+    fb_ar: 1.77,
 
-    fb_width : "1280",
+    fb_width: "1280",
 
-    fb_height : "720"
+    fb_height: "720"
 }
 
 
@@ -189,7 +181,6 @@ function show_infobox() {
     infobox.style.display = "block";
 
     const w = infobox.offsetWidth;
-
     const h = infobox.offsetHeight;
 
     const left =
@@ -210,27 +201,32 @@ function show_infobox() {
 
 <title>alcanzar</title>
 
+
 <meta charset="UTF-8">
+
 
 <meta
     http-equiv="X-UA-Compatible"
     content="IE=edge"
 >
 
+
 <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
 >
+
 
 <meta
     name="mobile-web-app-capable"
     content="yes"
 >
 
+
 <meta
     name="apple-mobile-web-app-capable"
     content="yes"
-/>
+>
 
 
 <link
@@ -244,10 +240,10 @@ function show_infobox() {
 <style>
 
 /*
- * ============================================================
- * PANTALLA COMPLETA
- * ============================================================
- */
+============================================================
+PANTALLA GENERAL
+============================================================
+*/
 
 html,
 body {
@@ -276,10 +272,49 @@ body {
 
 
 /*
- * ============================================================
- * ELEMENTOS PYGBAG
- * ============================================================
- */
+============================================================
+CANVAS DEL JUEGO
+============================================================
+
+IMPORTANTE:
+
+NO usamos translate.
+NO usamos 100vw.
+NO usamos 100vh.
+
+El JavaScript de abajo calcula exactamente
+dónde debe colocarse.
+*/
+
+canvas.emscripten {
+
+    border: 0;
+
+    background-color: transparent;
+
+    z-index: 5;
+
+    padding: 0;
+
+    margin: 0;
+
+    position: fixed;
+
+    display: block;
+
+    width: 800px;
+
+    height: 600px;
+
+    touch-action: none;
+}
+
+
+/*
+============================================================
+ELEMENTOS PYGBAG
+============================================================
+*/
 
 #status {
 
@@ -339,64 +374,13 @@ div.thick_border {
 }
 
 
-/*
- * ============================================================
- * CANVAS DEL JUEGO
- * ============================================================
- *
- * El juego interno es 800x600.
- *
- * JavaScript calcula el tamaño máximo que cabe
- * manteniendo SIEMPRE la proporción 4:3.
- */
-
-canvas.emscripten {
-
-    border: 0;
-
-    background-color: transparent;
-
-    z-index: 5;
-
-    padding: 0;
-
-    margin: 0;
-
-    position: fixed;
-
-    top: 50%;
-
-    left: 50%;
-
-    right: auto;
-
-    bottom: auto;
-
-    transform: translate(-50%, -50%);
-
-    display: block;
-
-    width: 800px;
-
-    height: 600px;
-
-    touch-action: none;
-}
-
-
-/*
- * ============================================================
- * ELEMENTOS AUXILIARES
- * ============================================================
- */
-
 .topright {
 
     position: absolute;
 
-    top: 0px;
+    top: 0;
 
-    right: 0px;
+    right: 0;
 }
 
 
@@ -406,7 +390,7 @@ canvas.emscripten {
 
     top: 40%;
 
-    right: 0px;
+    right: 0;
 }
 
 
@@ -424,7 +408,7 @@ canvas.emscripten {
 
     position: relative;
 
-    right: 0px;
+    right: 0;
 
     border: 1px solid black;
 }
@@ -443,10 +427,10 @@ canvas.emscripten {
 
 
 /*
- * ============================================================
- * INPUT DO TECLADO MÓVEL
- * ============================================================
- */
+============================================================
+INPUT PARA TECLADO DEL MÓVIL
+============================================================
+*/
 
 #mobile-text-input {
 
@@ -455,8 +439,6 @@ canvas.emscripten {
     left: 50%;
 
     bottom: 20px;
-
-    transform: translateX(-50%);
 
     width: 300px;
 
@@ -483,38 +465,22 @@ canvas.emscripten {
 
 </style>
 
-
-<script>
-
-/*
-if (navigator.serviceWorker)
-
-    navigator.serviceWorker.register(
-        "https://pygame-web.github.io/cdn/0.9.3/pygbag0.9.3.js"
-    )
-
-else
-
-    console.warn("Service workers not supported")
-*/
-
-</script>
-
-
 </head>
 
 
 <body>
 
 
-<div id="transfer" align=center>
+<div
+    id="transfer"
+    align="center"
+>
 
     <div
         class="emscripten"
-        id="status">
-
+        id="status"
+    >
         Downloading...
-
     </div>
 
 
@@ -523,13 +489,19 @@ else
         <progress
             value="0"
             max="100"
-            id="progress">
-        </progress>
+            id="progress"
+        ></progress>
 
     </div>
 
 </div>
 
+
+<!--
+============================================================
+CANVAS PRINCIPAL DEL JUEGO
+============================================================
+-->
 
 <canvas
     class="emscripten"
@@ -540,6 +512,10 @@ else
     tabindex="1">
 </canvas>
 
+
+<!--
+Canvas auxiliar de Pygbag
+-->
 
 <canvas
     class="emscripten"
@@ -553,37 +529,51 @@ else
 
 
 <div id="infobox">
-
     Loading, please wait ...
-
 </div>
 
 
 <div id="html"></div>
 
 
-<div id="crt" class="bottomright">
+<div
+    id="crt"
+    class="bottomright"
+>
 
 
-    <div id="system" hidden>
+    <div
+        id="system"
+        hidden
+    >
 
         <div class="button-container">
 
-            <button id="aiostop" disabled>
+            <button
+                id="aiostop"
+                disabled
+            >
                 AIO ⏏︎
             </button>
 
-            <button id="aiopaused_true" disabled>
+            <button
+                id="aiopaused_true"
+                disabled
+            >
                 AIO ■
             </button>
 
-            <button id="aiopaused_false" disabled>
+            <button
+                id="aiopaused_false"
+                disabled
+            >
                 AIO ▶
             </button>
 
             <button
                 id="pygame_mixer_music_pause"
-                disabled>
+                disabled
+            >
                 Music ■
             </button>
 
@@ -604,7 +594,10 @@ else
                 max
             </div>
 
-            <button id="load_rst" disabled>
+            <button
+                id="load_rst"
+                disabled
+            >
                 RESET
             </button>
 
@@ -626,12 +619,13 @@ else
     <div
         id="box"
         class="emscripten_border"
-        hidden="true">
+        hidden="true"
+    >
 
         <div
             id="info"
-            class="trinfo">
-        </div>
+            class="trinfo"
+        ></div>
 
 
         <iframe
@@ -641,8 +635,6 @@ else
             width="470px"
             height="90%"
             allowtransparency="true"
-            style="z-index: 10;"
-            style="background: #FFFFFF;"
             frameborder="1"
             allowfullscreen="true"
             webkitallowfullscreen="true"
@@ -651,21 +643,25 @@ else
             sandbox="allow-same-origin allow-top-navigation allow-scripts allow-pointer-lock"
             allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated"
             src="https://pygame-web.github.io/cdn/0.9.3/empty.html"
-            scrolling="yes">
-        </iframe>
+            scrolling="yes"
+        ></iframe>
 
     </div>
 
 </div>
 
 
-<div id="dlg" hidden>
+<div
+    id="dlg"
+    hidden
+>
 
     <input
         type="file"
         id="dlg_multifile"
         multiple
-        accept="image/*">
+        accept="image/*"
+    >
 
     <label for="dlg_multifile">
         Select files
@@ -675,7 +671,9 @@ else
 
 
 <!--
-    INPUT INVISIBLE PARA EL TECLADO DEL MÓVIL
+============================================================
+INPUT INVISIBLE PARA EL TECLADO DEL MÓVIL
+============================================================
 -->
 
 <input
@@ -694,8 +692,8 @@ else
     <div
         id="terminal"
         tabindex="1"
-        align="left">
-    </div>
+        align="left"
+    ></div>
 
 </div>
 
@@ -704,10 +702,10 @@ else
 
 
 /*
- * ============================================================
- * AJUSTE AUTOMÁTICO DE PANTALLA
- * ============================================================
- */
+============================================================
+CENTRAR Y ESCALAR EL JUEGO
+============================================================
+*/
 
 const gameCanvas =
     document.getElementById("canvas");
@@ -720,18 +718,21 @@ function ajustarPantalla() {
     }
 
 
-    const anchoPantalla =
+    /*
+    Tamaño real de la ventana.
+    */
+
+    const pantallaAncho =
         window.innerWidth;
 
-    const altoPantalla =
+    const pantallaAlto =
         window.innerHeight;
 
 
     /*
-     * Proporción original:
-     *
-     * 800 / 600 = 4 / 3
-     */
+    El juego es 800x600.
+    Proporción 4:3.
+    */
 
     const proporcion =
         800 / 600;
@@ -742,109 +743,154 @@ function ajustarPantalla() {
 
 
     /*
-     * Calculamos el rectángulo 4:3
-     * más grande que pueda entrar
-     * completamente en la pantalla.
-     */
+    Si la pantalla es muy ancha,
+    limitamos por la altura.
+    */
 
     if (
-        anchoPantalla / altoPantalla >
+        pantallaAncho / pantallaAlto >
         proporcion
     ) {
 
-        /*
-         * Pantalla más ancha.
-         * Limitamos por la altura.
-         */
-
         alto =
-            altoPantalla;
+            pantallaAlto;
 
         ancho =
             alto * proporcion;
 
-    } else {
-
-        /*
-         * Pantalla más estrecha.
-         * Limitamos por el ancho.
-         */
-
-        ancho =
-            anchoPantalla;
-
-        alto =
-            ancho / proporcion;
     }
 
 
     /*
-     * Aplicamos el tamaño calculado.
-     */
+    Si la pantalla es más estrecha,
+    limitamos por el ancho.
+    */
 
-    gameCanvas.style.width =
-        Math.floor(ancho) + "px";
+    else {
 
-    gameCanvas.style.height =
-        Math.floor(alto) + "px";
+        ancho =
+            pantallaAncho;
+
+        alto =
+            ancho / proporcion;
+
+    }
 
 
     /*
-     * Nos aseguramos de que quede
-     * exactamente centrado.
-     */
+    Evitamos números decimales.
+    */
+
+    ancho =
+        Math.floor(ancho);
+
+    alto =
+        Math.floor(alto);
+
+
+    /*
+    Calculamos exactamente
+    dónde empieza el canvas.
+    */
+
+    const izquierda =
+        Math.floor(
+            (pantallaAncho - ancho) / 2
+        );
+
+
+    const arriba =
+        Math.floor(
+            (pantallaAlto - alto) / 2
+        );
+
+
+    /*
+    Aplicamos tamaño.
+    */
+
+    gameCanvas.style.width =
+        ancho + "px";
+
+    gameCanvas.style.height =
+        alto + "px";
+
+
+    /*
+    Aplicamos posición.
+    */
 
     gameCanvas.style.position =
         "fixed";
 
+
     gameCanvas.style.left =
-        "50%";
+        izquierda + "px";
+
 
     gameCanvas.style.top =
-        "50%";
+        arriba + "px";
+
 
     gameCanvas.style.right =
         "auto";
 
+
     gameCanvas.style.bottom =
         "auto";
 
+
+    /*
+    MUY IMPORTANTE:
+    */
+
     gameCanvas.style.transform =
-        "translate(-50%, -50%)";
+        "none";
+
+
+    gameCanvas.style.margin =
+        "0";
+
+
+    gameCanvas.style.padding =
+        "0";
 }
 
 
 /*
- * Al cargar.
- */
+============================================================
+AJUSTE INICIAL
+============================================================
+*/
 
-window.addEventListener(
-    "load",
-    ajustarPantalla
-);
+ajustarPantalla();
 
 
 /*
- * Al cambiar tamaño.
- */
+============================================================
+AL CAMBIAR EL TAMAÑO
+============================================================
+*/
 
 window.addEventListener(
     "resize",
-    ajustarPantalla
-);
-
-
-/*
- * Al girar el móvil.
- */
-
-window.addEventListener(
-    "orientationchange",
     function () {
+
+        ajustarPantalla();
+
+        /*
+        Pygbag puede modificar el canvas
+        después del resize.
+        */
 
         setTimeout(
             ajustarPantalla,
-            150
+            50
+        );
+
+        setTimeout(
+            ajustarPantalla,
+            200
         );
 
     }
@@ -852,17 +898,89 @@ window.addEventListener(
 
 
 /*
- * Ejecutamos también inmediatamente.
- */
+============================================================
+AL GIRAR EL MÓVIL
+============================================================
+*/
 
-ajustarPantalla();
+window.addEventListener(
+    "orientationchange",
+    function () {
+
+        setTimeout(
+            ajustarPantalla,
+            100
+        );
+
+        setTimeout(
+            ajustarPantalla,
+            300
+        );
+
+        setTimeout(
+            ajustarPantalla,
+            600
+        );
+
+    }
+);
 
 
 /*
- * ============================================================
- * TECLADO VIRTUAL
- * ============================================================
- */
+============================================================
+AL TERMINAR DE CARGAR
+============================================================
+*/
+
+window.addEventListener(
+    "load",
+    function () {
+
+        ajustarPantalla();
+
+        setTimeout(
+            ajustarPantalla,
+            100
+        );
+
+        setTimeout(
+            ajustarPantalla,
+            500
+        );
+
+    }
+);
+
+
+/*
+============================================================
+VIGILAR CAMBIOS DEL CANVAS
+============================================================
+*/
+
+if (window.ResizeObserver) {
+
+    const observador =
+        new ResizeObserver(
+            function () {
+
+                setTimeout(
+                    ajustarPantalla,
+                    0
+                );
+
+            }
+        );
+
+    observador.observe(gameCanvas);
+}
+
+
+/*
+============================================================
+TECLADO VIRTUAL
+============================================================
+*/
 
 const mobileInput =
     document.getElementById(
@@ -870,16 +988,13 @@ const mobileInput =
     );
 
 
-const canvas =
-    document.getElementById(
-        "canvas"
-    );
+if (
+    mobileInput &&
+    gameCanvas
+) {
 
 
-if (mobileInput && canvas) {
-
-
-    canvas.addEventListener(
+    gameCanvas.addEventListener(
         "touchstart",
         function () {
 
@@ -894,7 +1009,7 @@ if (mobileInput && canvas) {
     );
 
 
-    canvas.addEventListener(
+    gameCanvas.addEventListener(
         "click",
         function () {
 
@@ -910,7 +1025,7 @@ if (mobileInput && canvas) {
         "blur",
         function () {
 
-            canvas.focus();
+            gameCanvas.focus();
 
         }
     );
@@ -919,10 +1034,10 @@ if (mobileInput && canvas) {
 
 
 /*
- * ============================================================
- * PYGBAG
- * ============================================================
- */
+============================================================
+PYGBAG
+============================================================
+*/
 
 globalThis.__canvas_resized =
     (self, ecw, ech) => {
@@ -937,7 +1052,9 @@ globalThis.__canvas_resized =
     };
 
 
-async function custom_onload(debug_hidden) {
+async function custom_onload(
+    debug_hidden
+) {
 
     console.log(
         __FILE__,
@@ -1013,14 +1130,17 @@ function info_inline(data) {
 function info_online(url) {
 
     fetch(url)
+
         .then(
             (response) =>
                 response.text()
         )
+
         .then(
             (html) =>
                 info_inline(html)
         )
+
         .catch(
             (error) =>
                 console.warn(error)
@@ -1035,7 +1155,6 @@ function frame_online(url) {
         url;
 
 }
-
 
 </script>
 
