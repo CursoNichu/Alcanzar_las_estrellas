@@ -168,7 +168,7 @@ config = {
 
     PYBUILD: "3.12",
 
-    fb_ar: 4 / 3,
+    fb_ar: 1.3333333333,
 
     fb_width: "800",
 
@@ -179,6 +179,7 @@ config = {
 function show_infobox() {
 
     infobox.style.display = "block";
+    infobox.style.pointerEvents = "auto";
 
     const w = infobox.offsetWidth;
     const h = infobox.offsetHeight;
@@ -233,9 +234,11 @@ function show_infobox() {
 
 <style>
 
-/* =========================================================
-   PÁGINA
-   ========================================================= */
+/*
+============================================================
+PANTALLA COMPLETA
+============================================================
+*/
 
 html,
 body {
@@ -248,7 +251,7 @@ body {
 
     overflow: hidden;
 
-    background-color: #7f7f7f;
+    background-color: powderblue;
 
     font-family: Arial, sans-serif;
 
@@ -256,22 +259,20 @@ body {
 }
 
 
-/* =========================================================
-   CONTENEDOR DEL JUEGO
-   ========================================================= */
+/*
+============================================================
+CONTENEDOR DEL JUEGO
+============================================================
+*/
 
 #game-container {
 
     position: fixed;
 
-    left: 0;
-    top: 0;
+    inset: 0;
 
     width: 100%;
     height: 100%;
-
-    margin: 0;
-    padding: 0;
 
     display: flex;
 
@@ -280,76 +281,54 @@ body {
 
     overflow: hidden;
 
+    margin: 0;
+    padding: 0;
+
     touch-action: none;
 }
 
 
-/* =========================================================
-   CANVAS PRINCIPAL
-   ========================================================= */
+/*
+============================================================
+CANVAS DEL JUEGO
+============================================================
+*/
 
-#canvas {
-
-    display: block;
-
-    width: min(100vw, 133.333333vh);
-    height: min(75vh, 75vw);
-
-    min-width: 0;
-    min-height: 0;
-
-    max-width: 100vw;
-    max-height: 100vh;
-
-    margin: 0;
-    padding: 0;
-
+canvas.emscripten {
     border: 0;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    display: block;
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
 
-    background: transparent;
+    width: min(100vw, 133.3333vh);
+    height: min(75vh, 75vw);
 
     aspect-ratio: 4 / 3;
 
     flex: 0 0 auto;
-
-    position: relative;
-
-    left: auto;
-    top: auto;
-
-    transform: none;
-
     touch-action: none;
 
-    z-index: 10;
+    z-index: 5;
 }
 
 
-/* =========================================================
-   VERTICAL
-   ========================================================= */
-
-@media screen and (orientation: portrait) {
-
-    #canvas {
-
-        width: min(100vw, 133.333333vh);
-        height: min(75vh, 75vw);
-
-    }
-
-}
-
-
-/* =========================================================
-   HORIZONTAL
-   ========================================================= */
+/*
+============================================================
+HORIZONTAL
+============================================================
+*/
 
 @media screen and (orientation: landscape) {
 
-    #canvas {
+    canvas.emscripten {
 
-        width: min(100vw, 133.333333vh);
+        width: min(100vw, 133.3333vh);
+
         height: min(75vh, 75vw);
 
     }
@@ -357,9 +336,11 @@ body {
 }
 
 
-/* =========================================================
-   ELEMENTOS PYGBAG
-   ========================================================= */
+/*
+============================================================
+ELEMENTOS PYGBAG
+============================================================
+*/
 
 #status {
 
@@ -368,6 +349,7 @@ body {
     vertical-align: top;
 
     margin-top: 20px;
+
     margin-left: 30px;
 
     font-weight: bold;
@@ -397,6 +379,23 @@ body {
     padding: 12px 24px;
 
     z-index: 999999;
+    display: none;
+    pointer-events: none;
+}
+
+#transfer {
+    pointer-events: none;
+}
+
+#pyconsole,
+#status,
+#html {
+    pointer-events: none !important;
+    z-index: -1 !important;
+}
+
+#canvas3d {
+    pointer-events: none !important;
 }
 
 
@@ -423,6 +422,7 @@ div.thick_border {
     position: absolute;
 
     top: 0;
+
     right: 0;
 }
 
@@ -442,6 +442,7 @@ div.thick_border {
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 }
 
@@ -465,17 +466,6 @@ div.thick_border {
     right: 10px;
 
     border: 1px solid black;
-}
-
-
-/* =========================================================
-   CANVAS AUXILIAR
-   ========================================================= */
-
-#canvas3d {
-
-    display: none !important;
-
 }
 
 </style>
@@ -509,9 +499,11 @@ div.thick_border {
 </div>
 
 
-<!-- ========================================================
-     JUEGO
-     ======================================================== -->
+<!--
+============================================================
+CONTENEDOR DEL JUEGO
+============================================================
+-->
 
 <div id="game-container">
 
@@ -528,9 +520,11 @@ div.thick_border {
 </div>
 
 
-<!-- ========================================================
-     CANVAS AUXILIAR DE PYGBAG
-     ======================================================== -->
+<!--
+============================================================
+CANVAS AUXILIAR DE PYGBAG
+============================================================
+-->
 
 <canvas
     class="emscripten"
@@ -555,6 +549,7 @@ div.thick_border {
     id="crt"
     class="bottomright"
 >
+
 
     <div
         id="system"
@@ -695,12 +690,95 @@ div.thick_border {
 </div>
 
 
+<!--
+============================================================
+INPUT OCULTO PARA TECLADO VIRTUAL
+============================================================
+-->
+
+<input
+    type="text"
+    id="teclado_movil"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
+    style="position:fixed; opacity:0; height:1px; width:1px; top:-100px; left:-100px; z-index:-1; border:none; padding:0; margin:0;"
+>
+
+<script type="application/javascript">
+
+/*
+============================================================
+PUENTE TECLADO VIRTUAL (para pygbag / Python)
+============================================================
+*/
+
+window.tecladoBuffer = [];
+
+function obtener_buffer_teclado() {
+    return JSON.stringify(window.tecladoBuffer);
+}
+
+function limpiar_buffer_teclado() {
+    window.tecladoBuffer = [];
+}
+
+function mostrar_teclado() {
+    const input = document.getElementById('teclado_movil');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+}
+
+function ocultar_teclado() {
+    const input = document.getElementById('teclado_movil');
+    if (input) {
+        input.blur();
+    }
+}
+
+(function initTecladoMovil() {
+    const input = document.getElementById('teclado_movil');
+    if (!input) return;
+
+    let valorAnterior = '';
+
+    input.addEventListener('input', function () {
+        const actual = input.value;
+
+        if (actual.length > valorAnterior.length) {
+            const nuevo = actual.slice(valorAnterior.length);
+            window.tecladoBuffer.push({ tipo: 'texto', valor: nuevo });
+        } else if (actual.length < valorAnterior.length) {
+            const borrados = valorAnterior.length - actual.length;
+            for (let i = 0; i < borrados; i++) {
+                window.tecladoBuffer.push({ tipo: 'backspace' });
+            }
+        }
+
+        valorAnterior = actual;
+    });
+
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            window.tecladoBuffer.push({ tipo: 'enter' });
+            e.preventDefault();
+        }
+    });
+})();
+
+</script>
+
 <script type="application/javascript">
 
 
-/* =========================================================
-   PYGBAG
-   ========================================================= */
+/*
+============================================================
+PYGBAG
+============================================================
+*/
 
 globalThis.__canvas_resized =
     (self, ecw, ech) => {
