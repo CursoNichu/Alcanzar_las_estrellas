@@ -486,10 +486,27 @@ CONTENEDOR DEL JUEGO
         tabindex="-1"
         inputmode="none"
     ></canvas>
+    
     <div id="touch-debug"></div>
 
     <style>
         #touch-debug {
+            position: fixed;
+            min-width: 220px;
+            padding: 8px 10px;
+            border: 3px solid red;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.85);
+            pointer-events: none;
+            display: none;
+            z-index: 9999;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: white;
+            line-height: 1.4;
+        }
+
+        #touch-debug-punto {
             position: fixed;
             width: 24px;
             height: 24px;
@@ -498,21 +515,21 @@ CONTENEDOR DEL JUEGO
             background: rgba(255, 0, 0, 0.35);
             pointer-events: none;
             display: none;
-            z-index: 9999;
+            z-index: 9998;
             transform: translate(-50%, -50%);
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            color: red;
         }
     </style>
+
+    <div id="touch-debug-punto"></div>
 
     <script>
     (function () {
 
         const canvas = document.getElementById("canvas");
-        const indicador = document.getElementById("touch-debug");
+        const informacion = document.getElementById("touch-debug");
+        const punto = document.getElementById("touch-debug-punto");
 
-        if (!canvas || !indicador) {
+        if (!canvas || !informacion || !punto) {
             return;
         }
 
@@ -520,14 +537,70 @@ CONTENEDOR DEL JUEGO
             "pointerdown",
             function (event) {
 
-                indicador.style.left = event.clientX + "px";
-                indicador.style.top = event.clientY + "px";
-                indicador.style.display = "block";
+                const rect = canvas.getBoundingClientRect();
+
+                /*
+                * Posición física del toque dentro del canvas
+                */
+                const canvasX = event.clientX - rect.left;
+                const canvasY = event.clientY - rect.top;
+
+                /*
+                * Conversión a las coordenadas internas
+                * del juego: 800 x 600
+                */
+                const juegoX =
+                    canvasX * (800 / rect.width);
+
+                const juegoY =
+                    canvasY * (600 / rect.height);
+
+                /*
+                * Mostramos el punto exactamente donde
+                * se ha tocado la pantalla.
+                */
+                punto.style.left = event.clientX + "px";
+                punto.style.top = event.clientY + "px";
+                punto.style.display = "block";
+
+                /*
+                * Mostramos la información.
+                */
+                informacion.innerHTML =
+                    "PANTALLA: X " +
+                    Math.round(event.clientX) +
+                    " / Y " +
+                    Math.round(event.clientY) +
+                    "<br>" +
+                    "CANVAS: X " +
+                    Math.round(canvasX) +
+                    " / Y " +
+                    Math.round(canvasY) +
+                    "<br>" +
+                    "JUEGO: X " +
+                    Math.round(juegoX) +
+                    " / Y " +
+                    Math.round(juegoY);
+
+                informacion.style.left =
+                    (event.clientX + 15) + "px";
+
+                informacion.style.top =
+                    (event.clientY + 15) + "px";
+
+                informacion.style.display = "block";
 
                 console.log(
-                    "TOQUE:",
-                    "X pantalla =", event.clientX,
-                    "Y pantalla =", event.clientY
+                    "TOQUE",
+                    "pantalla:",
+                    event.clientX,
+                    event.clientY,
+                    "canvas:",
+                    canvasX,
+                    canvasY,
+                    "juego:",
+                    juegoX,
+                    juegoY
                 );
 
             },
