@@ -173,7 +173,7 @@ config = {
     fb_width: "1280",
 
     fb_height: "720"
-}
+};
 
 
 function show_infobox() {
@@ -183,17 +183,11 @@ function show_infobox() {
     const w = infobox.offsetWidth;
     const h = infobox.offsetHeight;
 
-    const left =
-        (window.innerWidth - w) / 2;
-
-    const top =
-        (window.innerHeight - h) / 2;
-
     infobox.style.left =
-        left + "px";
+        ((window.innerWidth - w) / 2) + "px";
 
     infobox.style.top =
-        top + "px";
+        ((window.innerHeight - h) / 2) + "px";
 }
 
 </script>
@@ -241,7 +235,7 @@ function show_infobox() {
 
 /*
 ============================================================
-PANTALLA GENERAL
+PANTALLA COMPLETA
 ============================================================
 */
 
@@ -256,18 +250,37 @@ body {
 
     overflow: hidden;
 
-    position: fixed;
-
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
     background-color: powderblue;
 
-    font-family: arial;
+    font-family: Arial, sans-serif;
+}
 
-    overscroll-behavior: none;
+
+/*
+============================================================
+CONTENEDOR DEL JUEGO
+============================================================
+*/
+
+#game-container {
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+    margin: 0;
+    padding: 0;
 }
 
 
@@ -275,15 +288,6 @@ body {
 ============================================================
 CANVAS DEL JUEGO
 ============================================================
-
-IMPORTANTE:
-
-NO usamos translate.
-NO usamos 100vw.
-NO usamos 100vh.
-
-El JavaScript de abajo calcula exactamente
-dónde debe colocarse.
 */
 
 canvas.emscripten {
@@ -292,21 +296,23 @@ canvas.emscripten {
 
     background-color: transparent;
 
-    z-index: 5;
-
     padding: 0;
 
     margin: 0;
 
-    position: fixed;
-
     display: block;
+
+    position: relative;
 
     width: 800px;
 
     height: 600px;
 
+    flex: 0 0 auto;
+
     touch-action: none;
+
+    z-index: 5;
 }
 
 
@@ -428,7 +434,7 @@ div.thick_border {
 
 /*
 ============================================================
-INPUT PARA TECLADO DEL MÓVIL
+INPUT TECLADO MÓVIL
 ============================================================
 */
 
@@ -439,6 +445,8 @@ INPUT PARA TECLADO DEL MÓVIL
     left: 50%;
 
     bottom: 20px;
+
+    transform: translateX(-50%);
 
     width: 300px;
 
@@ -471,10 +479,7 @@ INPUT PARA TECLADO DEL MÓVIL
 <body>
 
 
-<div
-    id="transfer"
-    align="center"
->
+<div id="transfer" align="center">
 
     <div
         class="emscripten"
@@ -499,18 +504,28 @@ INPUT PARA TECLADO DEL MÓVIL
 
 <!--
 ============================================================
-CANVAS PRINCIPAL DEL JUEGO
+CONTENEDOR DEL JUEGO
 ============================================================
 -->
 
-<canvas
-    class="emscripten"
-    id="canvas"
-    width="800"
-    height="600"
-    oncontextmenu="event.preventDefault()"
-    tabindex="1">
-</canvas>
+<div id="game-container">
+
+
+    <!--
+    CANVAS PRINCIPAL
+    -->
+
+    <canvas
+        class="emscripten"
+        id="canvas"
+        width="800"
+        height="600"
+        oncontextmenu="event.preventDefault()"
+        tabindex="1"
+    ></canvas>
+
+
+</div>
 
 
 <!--
@@ -524,8 +539,8 @@ Canvas auxiliar de Pygbag
     height="720"
     oncontextmenu="event.preventDefault()"
     tabindex="1"
-    hidden>
-</canvas>
+    hidden
+></canvas>
 
 
 <div id="infobox">
@@ -672,7 +687,7 @@ Canvas auxiliar de Pygbag
 
 <!--
 ============================================================
-INPUT INVISIBLE PARA EL TECLADO DEL MÓVIL
+INPUT INVISIBLE PARA TECLADO
 ============================================================
 -->
 
@@ -703,282 +718,7 @@ INPUT INVISIBLE PARA EL TECLADO DEL MÓVIL
 
 /*
 ============================================================
-CENTRAR Y ESCALAR EL JUEGO
-============================================================
-*/
-
-const gameCanvas =
-    document.getElementById("canvas");
-
-
-function ajustarPantalla() {
-
-    if (!gameCanvas) {
-        return;
-    }
-
-
-    /*
-    Tamaño real de la ventana.
-    */
-
-    const pantallaAncho =
-        window.innerWidth;
-
-    const pantallaAlto =
-        window.innerHeight;
-
-
-    /*
-    El juego es 800x600.
-    Proporción 4:3.
-    */
-
-    const proporcion =
-        800 / 600;
-
-
-    let ancho;
-    let alto;
-
-
-    /*
-    Si la pantalla es muy ancha,
-    limitamos por la altura.
-    */
-
-    if (
-        pantallaAncho / pantallaAlto >
-        proporcion
-    ) {
-
-        alto =
-            pantallaAlto;
-
-        ancho =
-            alto * proporcion;
-
-    }
-
-
-    /*
-    Si la pantalla es más estrecha,
-    limitamos por el ancho.
-    */
-
-    else {
-
-        ancho =
-            pantallaAncho;
-
-        alto =
-            ancho / proporcion;
-
-    }
-
-
-    /*
-    Evitamos números decimales.
-    */
-
-    ancho =
-        Math.floor(ancho);
-
-    alto =
-        Math.floor(alto);
-
-
-    /*
-    Calculamos exactamente
-    dónde empieza el canvas.
-    */
-
-    const izquierda =
-        Math.floor(
-            (pantallaAncho - ancho) / 2
-        );
-
-
-    const arriba =
-        Math.floor(
-            (pantallaAlto - alto) / 2
-        );
-
-
-    /*
-    Aplicamos tamaño.
-    */
-
-    gameCanvas.style.width =
-        ancho + "px";
-
-    gameCanvas.style.height =
-        alto + "px";
-
-
-    /*
-    Aplicamos posición.
-    */
-
-    gameCanvas.style.position =
-        "fixed";
-
-
-    gameCanvas.style.left =
-        izquierda + "px";
-
-
-    gameCanvas.style.top =
-        arriba + "px";
-
-
-    gameCanvas.style.right =
-        "auto";
-
-
-    gameCanvas.style.bottom =
-        "auto";
-
-
-    /*
-    MUY IMPORTANTE:
-    */
-
-    gameCanvas.style.transform =
-        "none";
-
-
-    gameCanvas.style.margin =
-        "0";
-
-
-    gameCanvas.style.padding =
-        "0";
-}
-
-
-/*
-============================================================
-AJUSTE INICIAL
-============================================================
-*/
-
-ajustarPantalla();
-
-
-/*
-============================================================
-AL CAMBIAR EL TAMAÑO
-============================================================
-*/
-
-window.addEventListener(
-    "resize",
-    function () {
-
-        ajustarPantalla();
-
-        /*
-        Pygbag puede modificar el canvas
-        después del resize.
-        */
-
-        setTimeout(
-            ajustarPantalla,
-            50
-        );
-
-        setTimeout(
-            ajustarPantalla,
-            200
-        );
-
-    }
-);
-
-
-/*
-============================================================
-AL GIRAR EL MÓVIL
-============================================================
-*/
-
-window.addEventListener(
-    "orientationchange",
-    function () {
-
-        setTimeout(
-            ajustarPantalla,
-            100
-        );
-
-        setTimeout(
-            ajustarPantalla,
-            300
-        );
-
-        setTimeout(
-            ajustarPantalla,
-            600
-        );
-
-    }
-);
-
-
-/*
-============================================================
-AL TERMINAR DE CARGAR
-============================================================
-*/
-
-window.addEventListener(
-    "load",
-    function () {
-
-        ajustarPantalla();
-
-        setTimeout(
-            ajustarPantalla,
-            100
-        );
-
-        setTimeout(
-            ajustarPantalla,
-            500
-        );
-
-    }
-);
-
-
-/*
-============================================================
-VIGILAR CAMBIOS DEL CANVAS
-============================================================
-*/
-
-if (window.ResizeObserver) {
-
-    const observador =
-        new ResizeObserver(
-            function () {
-
-                setTimeout(
-                    ajustarPantalla,
-                    0
-                );
-
-            }
-        );
-
-    observador.observe(gameCanvas);
-}
-
-
-/*
-============================================================
-TECLADO VIRTUAL
+TECLADO MÓVIL
 ============================================================
 */
 
@@ -988,11 +728,16 @@ const mobileInput =
     );
 
 
+const gameCanvas =
+    document.getElementById(
+        "canvas"
+    );
+
+
 if (
     mobileInput &&
     gameCanvas
 ) {
-
 
     gameCanvas.addEventListener(
         "touchstart",
