@@ -48,10 +48,7 @@ async def custom_site():
 
         import tarfile
 
-        async with platform.fopen(
-            "alcanzar.tar.gz",
-            "rb"
-        ) as archive:
+        async with platform.fopen("alcanzar.tar.gz", "rb") as archive:
 
             tar = tarfile.open(
                 fileobj=archive,
@@ -106,7 +103,6 @@ async def custom_site():
     __import__(__name__).__file__ = main
 
     def ui_callback(pkg):
-
         platform.window.infobox.innerText = f"installing {pkg}"
 
     await shell.source(
@@ -153,8 +149,6 @@ asyncio.run(custom_site())
 --><script type="application/javascript">
 // END BLOCK
 
-
-// this dict is available under PyConfig.config from __main__
 
 config = {
 
@@ -225,13 +219,7 @@ function show_infobox() {
 
 <meta
     name="viewport"
-    content="
-        width=device-width,
-        initial-scale=1.0,
-        maximum-scale=1.0,
-        user-scalable=no,
-        viewport-fit=cover
-    "
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
 >
 
 <meta
@@ -255,10 +243,9 @@ function show_infobox() {
 
 <style>
 
-
 /*
  * ============================================================
- * PANTALLA
+ * PANTALLA COMPLETA
  * ============================================================
  */
 
@@ -277,7 +264,6 @@ body {
 
     top: 0;
     left: 0;
-
     right: 0;
     bottom: 0;
 
@@ -285,10 +271,6 @@ body {
 
     font-family: arial;
 
-    /*
-     * Evita desplazamiento/overscroll
-     * en navegadores móviles.
-     */
     overscroll-behavior: none;
 }
 
@@ -359,18 +341,13 @@ div.thick_border {
 
 /*
  * ============================================================
- * CANVAS PRINCIPAL
+ * CANVAS DEL JUEGO
  * ============================================================
  *
- * El juego mantiene siempre la proporción 4:3.
+ * El juego interno es 800x600.
  *
- * VERTICAL:
- *     utiliza todo el ancho posible.
- *
- * HORIZONTAL:
- *     utiliza toda la altura posible.
- *
- * En ambos casos queda centrado.
+ * JavaScript calcula el tamaño máximo que cabe
+ * manteniendo SIEMPRE la proporción 4:3.
  */
 
 canvas.emscripten {
@@ -391,64 +368,19 @@ canvas.emscripten {
 
     left: 50%;
 
-    transform:
-        translate(-50%, -50%);
+    right: auto;
+
+    bottom: auto;
+
+    transform: translate(-50%, -50%);
 
     display: block;
 
-    /*
-     * Proporción original
-     * del juego 800x600.
-     */
-    aspect-ratio: 4 / 3;
+    width: 800px;
 
-    /*
-     * El canvas puede recibir
-     * los toques del móvil.
-     */
+    height: 600px;
+
     touch-action: none;
-}
-
-
-/*
- * ============================================================
- * VERTICAL
- * ============================================================
- */
-
-@media screen and (orientation: portrait) {
-
-    canvas.emscripten {
-
-        width: 100vw;
-
-        height: auto;
-
-        max-width: 100vw;
-
-        max-height: 100vh;
-    }
-}
-
-
-/*
- * ============================================================
- * HORIZONTAL
- * ============================================================
- */
-
-@media screen and (orientation: landscape) {
-
-    canvas.emscripten {
-
-        height: 100vh;
-
-        width: auto;
-
-        max-width: 100vw;
-
-        max-height: 100vh;
-    }
 }
 
 
@@ -512,7 +444,7 @@ canvas.emscripten {
 
 /*
  * ============================================================
- * INPUT DEL TECLADO MÓVIL
+ * INPUT DO TECLADO MÓVEL
  * ============================================================
  */
 
@@ -524,8 +456,7 @@ canvas.emscripten {
 
     bottom: 20px;
 
-    transform:
-        translateX(-50%);
+    transform: translateX(-50%);
 
     width: 300px;
 
@@ -547,13 +478,8 @@ canvas.emscripten {
 
     pointer-events: auto;
 
-    /*
-     * El input sí puede recibir
-     * interacción táctil.
-     */
     touch-action: auto;
 }
-
 
 </style>
 
@@ -608,20 +534,20 @@ else
 <canvas
     class="emscripten"
     id="canvas"
-    width="1px"
-    height="1px"
+    width="800"
+    height="600"
     oncontextmenu="event.preventDefault()"
-    tabindex=1>
+    tabindex="1">
 </canvas>
 
 
 <canvas
     class="emscripten"
     id="canvas3d"
-    width="1280px"
-    height="720px"
+    width="1280"
+    height="720"
     oncontextmenu="event.preventDefault()"
-    tabindex=1
+    tabindex="1"
     hidden>
 </canvas>
 
@@ -633,31 +559,25 @@ else
 </div>
 
 
-<div id=html></div>
+<div id="html"></div>
 
 
-<div id=crt class=bottomright>
+<div id="crt" class="bottomright">
 
 
     <div id="system" hidden>
 
         <div class="button-container">
 
-            <button
-                id="aiostop"
-                disabled>
+            <button id="aiostop" disabled>
                 AIO ⏏︎
             </button>
 
-            <button
-                id="aiopaused_true"
-                disabled>
+            <button id="aiopaused_true" disabled>
                 AIO ■
             </button>
 
-            <button
-                id="aiopaused_false"
-                disabled>
+            <button id="aiopaused_false" disabled>
                 AIO ▶
             </button>
 
@@ -672,21 +592,19 @@ else
 
         <div class="button-container">
 
-            <div id=load_min>
+            <div id="load_min">
                 min
             </div>
 
-            <div id=load_avg>
+            <div id="load_avg">
                 avg
             </div>
 
-            <div id=load_max>
+            <div id="load_max">
                 max
             </div>
 
-            <button
-                id="load_rst"
-                disabled>
+            <button id="load_rst" disabled>
                 RESET
             </button>
 
@@ -706,9 +624,9 @@ else
 
 
     <div
-        id=box
+        id="box"
         class="emscripten_border"
-        hidden=true>
+        hidden="true">
 
         <div
             id="info"
@@ -747,8 +665,7 @@ else
         type="file"
         id="dlg_multifile"
         multiple
-        accept="image/*"
-    >
+        accept="image/*">
 
     <label for="dlg_multifile">
         Select files
@@ -776,7 +693,7 @@ else
 
     <div
         id="terminal"
-        tabIndex=1
+        tabindex="1"
         align="left">
     </div>
 
@@ -788,7 +705,162 @@ else
 
 /*
  * ============================================================
- * TECLADO VIRTUAL DEL MÓVIL
+ * AJUSTE AUTOMÁTICO DE PANTALLA
+ * ============================================================
+ */
+
+const gameCanvas =
+    document.getElementById("canvas");
+
+
+function ajustarPantalla() {
+
+    if (!gameCanvas) {
+        return;
+    }
+
+
+    const anchoPantalla =
+        window.innerWidth;
+
+    const altoPantalla =
+        window.innerHeight;
+
+
+    /*
+     * Proporción original:
+     *
+     * 800 / 600 = 4 / 3
+     */
+
+    const proporcion =
+        800 / 600;
+
+
+    let ancho;
+    let alto;
+
+
+    /*
+     * Calculamos el rectángulo 4:3
+     * más grande que pueda entrar
+     * completamente en la pantalla.
+     */
+
+    if (
+        anchoPantalla / altoPantalla >
+        proporcion
+    ) {
+
+        /*
+         * Pantalla más ancha.
+         * Limitamos por la altura.
+         */
+
+        alto =
+            altoPantalla;
+
+        ancho =
+            alto * proporcion;
+
+    } else {
+
+        /*
+         * Pantalla más estrecha.
+         * Limitamos por el ancho.
+         */
+
+        ancho =
+            anchoPantalla;
+
+        alto =
+            ancho / proporcion;
+    }
+
+
+    /*
+     * Aplicamos el tamaño calculado.
+     */
+
+    gameCanvas.style.width =
+        Math.floor(ancho) + "px";
+
+    gameCanvas.style.height =
+        Math.floor(alto) + "px";
+
+
+    /*
+     * Nos aseguramos de que quede
+     * exactamente centrado.
+     */
+
+    gameCanvas.style.position =
+        "fixed";
+
+    gameCanvas.style.left =
+        "50%";
+
+    gameCanvas.style.top =
+        "50%";
+
+    gameCanvas.style.right =
+        "auto";
+
+    gameCanvas.style.bottom =
+        "auto";
+
+    gameCanvas.style.transform =
+        "translate(-50%, -50%)";
+}
+
+
+/*
+ * Al cargar.
+ */
+
+window.addEventListener(
+    "load",
+    ajustarPantalla
+);
+
+
+/*
+ * Al cambiar tamaño.
+ */
+
+window.addEventListener(
+    "resize",
+    ajustarPantalla
+);
+
+
+/*
+ * Al girar el móvil.
+ */
+
+window.addEventListener(
+    "orientationchange",
+    function () {
+
+        setTimeout(
+            ajustarPantalla,
+            150
+        );
+
+    }
+);
+
+
+/*
+ * Ejecutamos también inmediatamente.
+ */
+
+ajustarPantalla();
+
+
+/*
+ * ============================================================
+ * TECLADO VIRTUAL
  * ============================================================
  */
 
@@ -876,18 +948,14 @@ async function custom_onload(debug_hidden) {
     pyconsole.hidden =
         debug_hidden;
 
-
     system.hidden =
         debug_hidden;
-
 
     transfer.hidden =
         debug_hidden;
 
-
     info.hidden =
         debug_hidden;
-
 
     box.hidden =
         debug_hidden;
