@@ -305,34 +305,20 @@ canvas.emscripten {
     top: auto;
     transform: none;
 
-    width: min(100vw, 133.3333vh);
-    height: min(75vh, 75vw);
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
 
+    /* Valor inicial; se actualiza en caliente desde Python
+       cada vez que cambia el tamano real de pantalla
+       (ver funcion actualizar_aspecto_canvas). */
     aspect-ratio: 4 / 3;
 
     flex: 0 0 auto;
     touch-action: none;
 
     z-index: 5;
-}
-
-
-/*
-============================================================
-HORIZONTAL
-============================================================
-*/
-
-@media screen and (orientation: landscape) {
-
-    canvas.emscripten {
-
-        width: min(100vw, 133.3333vh);
-
-        height: min(75vh, 75vw);
-
-    }
-
 }
 
 
@@ -724,18 +710,16 @@ function limpiar_buffer_teclado() {
     window.tecladoBuffer = [];
 }
 
-function mostrar_teclado() {
-    const input = document.getElementById('teclado_movil');
-    if (input) {
-        input.value = '';
-        input.focus();
-    }
-}
+/*
+============================================================
+ACTUALIZAR PROPORCION DEL CANVAS (orientacion dinamica)
+============================================================
+*/
 
-function ocultar_teclado() {
-    const input = document.getElementById('teclado_movil');
-    if (input) {
-        input.blur();
+function actualizar_aspecto_canvas(w, h) {
+    const lienzo = document.getElementById('canvas');
+    if (lienzo) {
+        lienzo.style.aspectRatio = w + ' / ' + h;
     }
 }
 
@@ -744,6 +728,18 @@ function ocultar_teclado() {
     if (!input) return;
 
     let valorAnterior = '';
+
+    window.mostrar_teclado = function () {
+        valorAnterior = '';
+        input.value = '';
+        input.focus();
+    };
+
+    window.ocultar_teclado = function () {
+        input.blur();
+        valorAnterior = '';
+        input.value = '';
+    };
 
     input.addEventListener('input', function () {
         const actual = input.value;
