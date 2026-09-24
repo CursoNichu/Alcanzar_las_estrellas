@@ -77,7 +77,7 @@ Comprueba en local que todo funciona (sonido, controles de teclado, que carga si
 ```bash
 cd build/web
 git init
-git remote add origin https://github.com/TU_USUARIO/juego-web.git
+git remote add origin https://github.com/TU_USUARIO/alcanzar-web.git
 git add .
 git commit -m "Primera version web del juego"
 git branch -M main
@@ -96,7 +96,7 @@ Arrastra todos los archivos de `build/web/` directamente a la página del reposi
 2. En *"Branch"*, selecciona `main` y la carpeta `/ (root)`.
 3. Guarda. GitHub te dará una URL parecida a:
    ```
-   https://TU_USUARIO.github.io/juego-web/
+   https://TU_USUARIO.github.io/alcanzar-web/
    ```
 4. Espera 1-2 minutos y abre esa URL — debería cargar tu juego exactamente igual que en local.
 
