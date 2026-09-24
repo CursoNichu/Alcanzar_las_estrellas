@@ -162,9 +162,6 @@ Si en algún momento tocas el `index.html` o `botones_movil.py`, ten en cuenta e
 **El juego se ve pero los botones no responden bien / hay una zona que no funciona**
 → Revisa que `#canvas3d` tenga `pointer-events: none` y que no haya quedado ningún elemento (`#infobox`, `#transfer`, `#pyconsole`) capturando toques por encima del canvas.
 
-**El teclado del móvil no aparece al escribir el nombre**
-→ En iOS Safari, el `focus()` a veces solo funciona si ocurre muy pegado a un toque real del usuario. Si falla solo en iPhone, es una limitación conocida del navegador, no un bug del código.
-
 **Al rotar el móvil, el juego se ve distorsionado o los botones desaparecen un instante**
 → Es esperable un pequeño parpadeo mientras `pygame.display.set_mode()` se recalcula; si el problema persiste, revisa que `actualizar_aspecto_canvas()` se esté llamando **después** de cada `set_mode()`.
 
